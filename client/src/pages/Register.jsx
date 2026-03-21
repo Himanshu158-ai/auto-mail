@@ -20,7 +20,7 @@ const Register = () => {
     e.preventDefault();
     const res = await register(formData);
     if (res?.success) {
-      navigate("/");
+      navigate("/login");
     }
   };
 
@@ -46,7 +46,7 @@ const Register = () => {
               name="username"
               value={formData.username}
               onChange={handleChange}
-              placeholder="Enter username"
+              placeholder="Enter username without spaces (John_Doe)"
               className="bg-[#1a1a1a] border border-[#333] text-white rounded-lg px-4 py-3 text-sm outline-none focus:border-[#555] transition"
             />
           </div>
@@ -64,13 +64,13 @@ const Register = () => {
           </div>
 
           <div className="flex flex-col gap-1">
-            <label className="text-[#888] text-sm">Department</label>
+            <label className="text-[#888] text-sm">Position</label>
             <input
               type="text"
               name="department"
               value={formData.department}
               onChange={handleChange}
-              placeholder="Enter department"
+              placeholder="Enter position"
               className="bg-[#1a1a1a] border border-[#333] text-white rounded-lg px-4 py-3 text-sm outline-none focus:border-[#555] transition"
             />
           </div>

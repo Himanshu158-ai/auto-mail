@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { loginUser, registerUser } from "../services/api.service";
+import toast from "react-hot-toast";
 
 const useAuth = () => {
   const [loading, setLoading] = useState(false);
@@ -10,9 +11,12 @@ const useAuth = () => {
     setError(null);
     try {
       const res = await loginUser(data);
+      toast.success("Logged in successfully");
       return res.data;
     } catch (err) {
-      setError(err.response?.data?.message || "Something went wrong");
+      const errorMsg = err.response?.data?.message || "Something went wrong";
+      setError(errorMsg);
+      toast.error(errorMsg);
     } finally {
       setLoading(false);
     }
@@ -23,9 +27,12 @@ const useAuth = () => {
     setError(null);
     try {
       const res = await registerUser(data);
+      toast.success("Registered successfully! Please verify your email.");
       return res.data;
     } catch (err) {
-      setError(err.response?.data?.message || "Something went wrong");
+      const errorMsg = err.response?.data?.message || "Something went wrong";
+      setError(errorMsg);
+      toast.error(errorMsg);
     } finally {
       setLoading(false);
     }

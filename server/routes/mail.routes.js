@@ -2,6 +2,7 @@ import express from "express";
 import User from "../models/user.model.js";
 import { extractUsername, generateEmailContent } from "../services/gemini.mail.service.js";
 import { sendEmail } from "../services/mail.service.js";
+import verified from "../controllers/Verify.controller.js"
 
 const router = express.Router();
 
@@ -60,5 +61,7 @@ router.post("/send", async (req, res) => {
     });
   }
 });
+
+router.get("/verify/:token",verified);
 
 export default router;

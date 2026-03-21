@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { sendMail } from "../services/api.service";
+import toast from "react-hot-toast";
 
 const useMail = () => {
   const [loading, setLoading] = useState(false);
@@ -14,7 +15,9 @@ const useMail = () => {
       setResult(res.data);
       return res.data;
     } catch (err) {
-      setError(err.response?.data?.message || "Something went wrong");
+      const errorMsg = err.response?.data?.message || "Something went wrong";
+      setError(errorMsg);
+      toast.error(errorMsg);
     } finally {
       setLoading(false);
     }

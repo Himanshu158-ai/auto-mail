@@ -4,17 +4,23 @@ import Register from "./pages/Register";
 import AdminDashboard from "./pages/AdminDashboard"; 
 import TeacherDashboard from "./pages/TeacherDashboard";
 import ProtectedRoute from "./utils/ProtectedRoutes";
+import VerifySuccess from "./pages/VerifySuccess";
+import { Toaster } from "react-hot-toast";
 
 function App() {
   return (
-    <BrowserRouter>
-      <Routes>
-        <Route path="/login" element={<Login />} />
-        <Route path="/register" element={<Register />} />
-        <Route path="/admin" element={<ProtectedRoute><AdminDashboard /></ProtectedRoute>} />
-        <Route path="/" element={<ProtectedRoute><TeacherDashboard /></ProtectedRoute>} />
-      </Routes>
-    </BrowserRouter>
+    <>
+      <Toaster position="top-center" />
+      <BrowserRouter>
+        <Routes>
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
+          <Route path="/admin" element={<ProtectedRoute allowedRole="admin"><AdminDashboard /></ProtectedRoute>} />
+          <Route path="/" element={<ProtectedRoute allowedRole="teacher"><TeacherDashboard /></ProtectedRoute>} />
+          <Route path="/verify/:token" element={<VerifySuccess />} />
+        </Routes>
+      </BrowserRouter>
+    </>
   );
 }
 

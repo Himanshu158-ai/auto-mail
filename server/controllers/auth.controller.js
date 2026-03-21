@@ -1,22 +1,19 @@
 import User from "../models/user.model.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
+import {sendEmail} from "../services/mail.service.js";
+import crypto from "crypto";
 
 export const register = async (req, res) => {
     try {
         const { username, email, password, role, department } = req.body;
         const hashedPassword = await bcrypt.hash(password, 10);
-        const user = await User.create({ username, email, password:hashedPassword, role, department });
-        const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: "3h" });
-        res.cookie("token", token, {
-            httpOnly: true,
-            secure: process.env.NODE_ENV === "production",
-            sameSite: process.env.NODE_ENV === "production" ? "none" : "strict",
-            maxAge: 3 * 60 * 60 * 1000,
-        });
+        const verificationToken = crypto.randomBytes(30).toString("hex");
+        const user = await User.create({ username, email, password:hashedPassword, role, department,verifiedToken:verificationToken,verifiedTokenExpiry:Date.now() + 3 * 60 * 60 * 1000});
+        await sendEmail({to: user.email, subject: "Verify your email", text: `Click the link to verify your email: http://localhost:3000/api/mail/verify/${verificationToken}`});
         res.status(201).json({
             success:true,
-            message:"User registered successfully",
+            message:"Check your email to verify your account",
             user:{
                 _id:user._id,
                 username:user.username,
@@ -41,14 +38,20 @@ export const login = async (req, res) => {
         if (!user) {
             return res.status(404).json({
                 success:false,
-                message:"User not found"
+                message:"invaild username or password"
+            });
+        }
+        if(!user.verified){
+            return res.status(401).json({
+                success:false,
+                message:"Please verify your email"
             });
         }
         const isPasswordValid = await bcrypt.compare(password, user.password);
         if (!isPasswordValid) {
             return res.status(401).json({
                 success:false,
-                message:"Invalid password"
+                message:"invaild username or password"
             });
         }
         const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: "3h" });

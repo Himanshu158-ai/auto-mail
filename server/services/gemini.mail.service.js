@@ -25,21 +25,33 @@ export async function generateEmailContent(transcript, username) {
   const response = await ai.models.generateContent({
     model: "gemini-2.5-flash-lite",
     contents: `
-      Generate a detailed and professional college email based on this voice transcript.
+      Generate a concise and professional college email based on this voice transcript.
       Transcript: "${transcript}"
       Recipient Username: "${username}"
       
       Rules:
       - Tone should be formal and professional
-      - Email should be detailed and descriptive
-      - Add relevant points, context and proper explanation
-      - Minimum 2-3 paragraphs
+      - DO NOT write long paragraphs
+      - Extract key points from the transcript and present them as a numbered or bulleted list
+      - Each point should be brief (1-2 lines max)
+      - Add a short 1-line intro before the list and a short 1-line closing after
       - Include proper greeting and sign off
+      
+      Example format for body:
+      <p>Dear [Name],</p>
+      <p>I wanted to bring the following points to your attention:</p>
+      <ol>
+        <li><strong>Point 1:</strong> Brief explanation</li>
+        <li><strong>Point 2:</strong> Brief explanation</li>
+        <li><strong>Point 3:</strong> Brief explanation</li>
+      </ol>
+      <p>Please let me know if you have any questions.</p>
+      <p>Regards,<br/>Admin</p>
       
       Return response in this exact JSON format:
       {
         "subject": "email subject here",
-        "body": "<h2>Heading</h2><p>detailed content...</p><p>more context...</p><br/><p>Regards,<br/>Admin</p>"
+        "body": "<p>Dear...</p><ol><li>...</li></ol><p>Regards,<br/>Admin</p>"
       }
       Return ONLY the JSON, no extra text.
     `,
